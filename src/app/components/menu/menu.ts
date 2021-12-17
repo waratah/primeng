@@ -276,7 +276,7 @@ export class Menu implements OnDestroy {
             return;
         }
 
-        if (!item.url && !event.ctrlKey) {
+        if (!item.url && !item.routerLink) {
             event.preventDefault();
         }
 

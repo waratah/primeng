@@ -140,7 +140,7 @@ export class MegaMenu implements AfterContentInit {
         }
     }
 
-    onCategoryClick(event: PointerEvent, item: MenuItem | MegaMenuItem) {
+    onCategoryClick(event, item: MenuItem | MegaMenuItem) {
         if (item.disabled) {
             event.preventDefault();
             return;
@@ -175,7 +175,7 @@ export class MegaMenu implements AfterContentInit {
             return;
         }
 
-        if (!item.url && !event.ctrlKey) {
+        if (!item.url && !item.routerLink) {
             event.preventDefault();
         }
 
