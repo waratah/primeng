@@ -35,8 +35,8 @@
     "@fullcalendar/timegrid": "^5.8.0",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
+    "@types/jspdf": "^1.3.3",
     "chart.js": "3.3.2",
-    "codelyzer": "^6.0.0",
     "del": "^2.2.0",
     "file-saver": "^2.0.2",
     "gulp": "^4.0.2",
@@ -57,7 +57,7 @@
     "ng-packagr": "~13.0.0",
     "primeflex": "^3.1.0",
     "primeicons": "^5.0.0",
-    "prismjs": "1.20.0",
+    "prismjs": "^1.25.0",
     "quill": "1.3.7",
     "rxjs": "~7.4.0",
     "ts-node": "~8.3.0",
@@ -65,7 +65,7 @@
     "tslint": "~6.1.0",
     "typescript": "~4.4.3",
     "web-animations-js": "^2.3.2",
-    "xlsx": "^0.15.1",
+    "xlsx": "^0.17.4",
     "zone.js": "~0.11.4"
   }
 }
