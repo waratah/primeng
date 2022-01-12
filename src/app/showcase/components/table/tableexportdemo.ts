@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from '../../domain/product';
 import { ProductService } from '../../service/productservice';
 import * as FileSaver from 'file-saver';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
     templateUrl: './tableexportdemo.html'
@@ -32,13 +34,24 @@ export class TableExportDemo implements OnInit {
     }
 
     exportPdf() {
-        import("jspdf").then(jsPDF => {
-            import("jspdf-autotable").then(x => {
-                const doc = new jsPDF.default(0,0);
-                doc.autoTable(this.exportColumns, this.products);
-                doc.save('products.pdf');
-            })
-        })
+        // default is A4 PDF
+        const doc = new jsPDF();
+        // Landscape export, 2×4 inches
+        // const doc = new jsPDF({
+        //     orientation: 'landscape',
+        //     unit: 'in',
+        //     format: [4, 2]
+        //   });
+        autoTable(doc, {
+            columns: this.exportColumns,
+            body: this.products.map((record) => ({
+                code: record.code,
+                name: record.name,
+                category: record.category,
+                quantity: record.quantity?.toString(),
+            })),
+        });
+        doc.save('products.pdf');
     }
 
     exportExcel() {
