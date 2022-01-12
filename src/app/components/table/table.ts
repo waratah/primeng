@@ -355,7 +355,7 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
 
     @ViewChild('wrapper') wrapperViewChild: ElementRef;
 
-    @ViewChild('table') tableViewChild: ElementRef;
+    @ViewChild('table', { static: false }) tableViewChild: ElementRef;
 
     @ViewChild('tableHeader') tableHeaderViewChild: ElementRef;
 
@@ -1814,7 +1814,7 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
         if (this.virtualScrollBody) {
             this.virtualScrollBody.scrollTo(options);
         }
-        else  if (this.wrapperViewChild && this.wrapperViewChild.nativeElement) {
+        else  if (this.wrapperViewChild?.nativeElement) {
             if (this.wrapperViewChild.nativeElement.scrollTo) {
                 this.wrapperViewChild.nativeElement.scrollTo(options);
             }
@@ -2342,6 +2342,7 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
                 this.tableWidthState = widths.map((x) => Number(x)).reduce((a, b) => a + b, 0).toString();
                 this.tableViewChild.nativeElement.style.width = this.tableWidthState;
                 this.tableViewChild.nativeElement.style.minWidth = this.tableWidthState;
+                this.wrapperViewChild.nativeElement.style.width = this.tableWidthState;
             }
 
             if (ObjectUtils.isNotEmpty(widths)) {
