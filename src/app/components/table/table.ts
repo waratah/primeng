@@ -2342,7 +2342,6 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
                 this.tableWidthState = widths.map((x) => Number(x)).reduce((a, b) => a + b, 0).toString();
                 this.tableViewChild.nativeElement.style.width = this.tableWidthState;
                 this.tableViewChild.nativeElement.style.minWidth = this.tableWidthState;
-                this.wrapperViewChild.nativeElement.style.width = this.tableWidthState;
             }
 
             if (ObjectUtils.isNotEmpty(widths)) {
