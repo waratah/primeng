@@ -4667,7 +4667,7 @@ export class ColumnFilter implements AfterContentInit {
                 if (this.overlaySubscription) {
                     this.overlaySubscription.unsubscribe();
                 }
-                break;
+            break;
         }
     }
 
@@ -4675,7 +4675,7 @@ export class ColumnFilter implements AfterContentInit {
         switch (event.toState) {
             case 'void':
                 ZIndexUtils.clear(event.element);
-                break;
+            break;
         }
     }
 
