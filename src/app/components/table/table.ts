@@ -1,5 +1,6 @@
 import { NgModule, Component, HostListener, OnInit, OnDestroy, AfterViewInit, Directive, Optional, AfterContentInit,
-    Input, Output, EventEmitter, ElementRef, ContentChildren, TemplateRef, QueryList, ViewChild, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, Query, ViewEncapsulation, Renderer2} from '@angular/core';
+    Input, Output, EventEmitter, ElementRef, ContentChildren, TemplateRef, QueryList, ViewChild, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, ViewEncapsulation,
+    Renderer2, TrackByFunction } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeTemplate, SharedModule, FilterMatchMode, FilterOperator, SelectItem, PrimeNGConfig, TranslationKeys, FilterService, OverlayService } from 'primeng/api';
@@ -149,8 +150,7 @@ export class TableService {
         'class': 'p-element'
     }
 })
-export class Table implements OnInit, AfterViewInit, AfterContentInit, BlockableUI, OnChanges {
-
+export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit, BlockableUI, OnChanges {
     @Input() frozenColumns: any[];
 
     @Input() frozenValue: any[];
@@ -215,7 +215,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
 
     @Input() rowSelectable;
 
-    @Input() rowTrackBy: Function = (index: number, item: any) => item;
+    @Input() rowTrackBy: TrackByFunction<any> = (index: number, item: any) => item;
 
     @Input() lazy: boolean = false;
 
@@ -501,7 +501,14 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
 
     responsiveStyleElement: any;
 
-    constructor(public el: ElementRef, public zone: NgZone, public tableService: TableService, public cd: ChangeDetectorRef, public filterService: FilterService, public overlayService: OverlayService) {}
+    constructor(
+        private el: ElementRef,
+        private zone: NgZone,
+        public tableService: TableService,
+        private cd: ChangeDetectorRef,
+        private filterService: FilterService,
+        public overlayService: OverlayService
+    ) {}
 
     ngOnInit() {
         if (this.lazy && this.lazyLoadOnInit) {
@@ -526,95 +533,95 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
             switch (item.getType()) {
                 case 'caption':
                     this.captionTemplate = item.template;
-                break;
+                    break;
 
                 case 'header':
                     this.headerTemplate = item.template;
-                break;
+                    break;
 
                 case 'headergrouped':
                     this.headerGroupedTemplate = item.template;
-                break;
+                    break;
 
                 case 'body':
                     this.bodyTemplate = item.template;
-                break;
+                    break;
 
                 case 'loadingbody':
                     this.loadingBodyTemplate = item.template;
-                break;
+                    break;
 
                 case 'footer':
                     this.footerTemplate = item.template;
-                break;
+                    break;
 
                 case 'footergrouped':
                     this.footerGroupedTemplate = item.template;
-                break;
+                    break;
 
                 case 'summary':
                     this.summaryTemplate = item.template;
-                break;
+                    break;
 
                 case 'colgroup':
                     this.colGroupTemplate = item.template;
-                break;
+                    break;
 
                 case 'rowexpansion':
                     this.expandedRowTemplate = item.template;
-                break;
+                    break;
 
                 case 'groupheader':
                     this.groupHeaderTemplate = item.template;
-                break;
+                    break;
 
                 case 'rowspan':
                     this.rowspanTemplate = item.template;
-                break;
+                    break;
 
                 case 'groupfooter':
                     this.groupFooterTemplate = item.template;
-                break;
+                    break;
 
                 case 'frozenrows':
                     this.frozenRowsTemplate = item.template;
-                break;
+                    break;
 
                 case 'frozenheader':
                     this.frozenHeaderTemplate = item.template;
-                break;
+                    break;
 
                 case 'frozenbody':
                     this.frozenBodyTemplate = item.template;
-                break;
+                    break;
 
                 case 'frozenfooter':
                     this.frozenFooterTemplate = item.template;
-                break;
+                    break;
 
                 case 'frozencolgroup':
                     this.frozenColGroupTemplate = item.template;
-                break;
+                    break;
 
                 case 'frozenrowexpansion':
                     this.frozenExpandedRowTemplate = item.template;
-                break;
+                    break;
 
                 case 'emptymessage':
                     this.emptyMessageTemplate = item.template;
-                break;
+                    break;
 
                 case 'paginatorleft':
                     this.paginatorLeftTemplate = item.template;
-                break;
+                    break;
 
                 case 'paginatorright':
                     this.paginatorRightTemplate = item.template;
-                break;
+                    break;
 
                 case 'paginatordropdownitem':
                     this.paginatorDropdownItemTemplate = item.template;
-                break;
+                    break;
             }
         });
     }
@@ -626,9 +633,9 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
 
         if (this.scrollable && this.virtualScroll) {
             this.virtualScrollSubscription =  this.virtualScrollBody.renderedRangeStream.subscribe(range => {
-                let top = range.start * this.virtualRowHeight * -1;
-                this.tableHeaderViewChild.nativeElement.style.top = top + 'px';
-            });
+                        let top = range.start * this.virtualRowHeight * -1;
+                        this.tableHeaderViewChild.nativeElement.style.top = top + 'px';
+                    });
         }
     }
 
@@ -803,11 +810,11 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
     }
 
     @Input() get selectAll(): boolean | null {
-        return this._selection;
+        return this._selectAll;
     }
 
     set selectAll(val: boolean | null) {
-        this._selection = val;
+        this._selectAll = val;
     }
 
     get dataToRender() {
@@ -857,7 +864,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
         }
     }
 
-    sort(event) {
+    sort(event: { originalEvent: MouseEvent; field: string }) {
         let originalEvent = event.originalEvent;
 
         if (this.sortMode === 'single') {
@@ -1520,7 +1527,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
                     this.totalRecords = this.value ? this.value.length : 0;
                 }
             }
-            else {
+             else {
                 let globalFilterFieldsArray;
                 if (this.filters['global']) {
                     if (!this.columns && !this.globalFilterFields)
@@ -2002,11 +2009,11 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
             let style = this.scrollable ? `flex: 1 1 ${colWidth}px !important` : `width: ${colWidth}px !important`;
             innerHTML += `
                 #${this.id} .p-datatable-thead > tr > th:nth-child(${index + 1}),
+                #${this.id} .p-datatable-thead > tr > td:nth-child(${index + 1}),
                 #${this.id} .p-datatable-tbody > tr > td:nth-child(${index + 1}),
                 #${this.id} .p-datatable-tfoot > tr > td:nth-child(${index + 1}) {
                     ${style}
-                }
-            `
+                }`;
         });
 
         this.styleElement.innerHTML = innerHTML;
@@ -2316,7 +2323,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
         }
     }
 
-    saveColumnWidths(state) {
+    saveColumnWidths(state: TableState) {
         let widths = [];
         let headers = DomHandler.find(this.containerViewChild.nativeElement, '.p-datatable-thead > tr > th');
         headers.forEach(header => widths.push(DomHandler.getOuterWidth(header)));
@@ -2332,19 +2339,21 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
             let widths = this.columnWidthsState.split(',');
 
             if (this.columnResizeMode === 'expand' && this.tableWidthState) {
+                this.tableWidthState = widths.map((x) => Number(x)).reduce((a, b) => a + b, 0).toString();
                 this.tableViewChild.nativeElement.style.width = this.tableWidthState;
                 this.tableViewChild.nativeElement.style.minWidth = this.tableWidthState;
             }
 
             if (ObjectUtils.isNotEmpty(widths)) {
                 this.createStyleElement();
-                
+
                 let innerHTML = '';
                 widths.forEach((width,index) => {
                     let style = this.scrollable ? `flex: 1 1 ${width}px !important` : `width: ${width}px !important`;
 
                     innerHTML += `
                         #${this.id} .p-datatable-thead > tr > th:nth-child(${index + 1}),
+                        #${this.id} .p-datatable-thead > tr > td:nth-child(${index + 1}),
                         #${this.id} .p-datatable-tbody > tr > td:nth-child(${index + 1}),
                         #${this.id} .p-datatable-tfoot > tr > td:nth-child(${index + 1}) {
                             ${style}
@@ -2357,7 +2366,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
         }
     }
 
-    saveColumnOrder(state) {
+    saveColumnOrder(state: TableState) {
         if (this.columns) {
             let columnOrder: string[] = [];
             this.columns.map(column => {
@@ -2422,6 +2431,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
             let innerHTML = `
 @media screen and (max-width: ${this.breakpoint}) {
     #${this.id} .p-datatable-thead > tr > th,
+    #${this.id} .p-datatable-thead > tr > td,
     #${this.id} .p-datatable-tfoot > tr > td {
         display: none !important;
     }
@@ -4064,7 +4074,7 @@ export class TableHeaderCheckbox  {
     updateCheckedState() {
         this.cd.markForCheck();
 
-       if (this.dt._selectAll !== null) {
+        if (this.dt._selectAll !== null) {
             return this.dt._selectAll;
         }
         else {
@@ -4486,15 +4496,15 @@ export class ColumnFilter implements AfterContentInit {
 
                 case 'filter':
                     this.filterTemplate = item.template;
-                break;
+                    break;
 
                 case 'footer':
                     this.footerTemplate = item.template;
-                break;
+                    break;
 
                 default:
                     this.filterTemplate = item.template;
-                break;
+                    break;
             }
         });
     }
@@ -4531,7 +4541,7 @@ export class ColumnFilter implements AfterContentInit {
                 }
 
                 event.preventDefault();
-            break;
+                break;
 
             case 'ArrowUp':
                 var prevItem = this.findPrevItem(item);
@@ -4542,7 +4552,7 @@ export class ColumnFilter implements AfterContentInit {
                 }
 
                 event.preventDefault();
-            break;
+                break;
         }
     }
 
@@ -4585,7 +4595,7 @@ export class ColumnFilter implements AfterContentInit {
             case 'Escape':
             case 'Tab':
                 this.overlayVisible = false;
-            break;
+                break;
 
             case 'ArrowDown':
                 if (this.overlayVisible) {
@@ -4599,7 +4609,7 @@ export class ColumnFilter implements AfterContentInit {
                     this.overlayVisible = true;
                     event.preventDefault();
                 }
-            break;
+                break;
         }
     }
 
@@ -4657,7 +4667,7 @@ export class ColumnFilter implements AfterContentInit {
                 if (this.overlaySubscription) {
                     this.overlaySubscription.unsubscribe();
                 }
-            break;
+                break;
         }
     }
 
@@ -4665,7 +4675,7 @@ export class ColumnFilter implements AfterContentInit {
         switch (event.toState) {
             case 'void':
                 ZIndexUtils.clear(event.element);
-            break;
+                break;
         }
     }
 
