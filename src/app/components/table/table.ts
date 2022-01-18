@@ -22,6 +22,7 @@ import { BlockableUI } from 'primeng/api';
 import { Subject, Subscription } from 'rxjs';
 import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {trigger,style,transition,animate,AnimationEvent} from '@angular/animations';
+import { StateKey } from '@angular/platform-browser';
 
 @Injectable()
 export class TableService {
@@ -2347,18 +2348,24 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
             if (ObjectUtils.isNotEmpty(widths)) {
                 this.createStyleElement();
 
-                let innerHTML = '';
-                widths.forEach((width,index) => {
-                    let style = this.scrollable ? `flex: 1 1 ${width}px !important` : `width: ${width}px !important`;
+            if (this.scrollable && widths && widths.length > 0) {
+                    let innerHTML = '';
+                    widths.forEach((width,index) => {
+                        innerHTML += `
+                            #${this.id}-table > .p-datatable-thead > tr > th:nth-child(${index+1}) {
+                                flex: 0 0 ${width}px;
+                            }
 
-                    innerHTML += `
-                        #${this.id} .p-datatable-thead > tr > th:nth-child(${index + 1}),
-                        #${this.id} .p-datatable-thead > tr > td:nth-child(${index + 1}),
-                        #${this.id} .p-datatable-tbody > tr > td:nth-child(${index + 1}),
-                        #${this.id} .p-datatable-tfoot > tr > td:nth-child(${index + 1}) {
-                            ${style}
-                        }
-                    `
+                            #${this.id}-table > .p-datatable-tbody > tr > td:nth-child(${index+1}) {
+                                flex: 0 0 ${width}px;
+                            }
+                        `
+                    });
+                this.styleElement.innerHTML = innerHTML;
+            }
+            else {
+                DomHandler.find(this.tableViewChild.nativeElement, '.p-datatable-thead > tr > th').forEach((header, index) => {
+                    header.style.width = widths[index] + 'px';
                 });
 
                 this.styleElement.innerHTML = innerHTML;
