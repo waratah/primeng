@@ -22,7 +22,6 @@ import { BlockableUI } from 'primeng/api';
 import { Subject, Subscription } from 'rxjs';
 import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {trigger,style,transition,animate,AnimationEvent} from '@angular/animations';
-import { StateKey } from '@angular/platform-browser';
 
 @Injectable()
 export class TableService {
@@ -534,95 +533,95 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
             switch (item.getType()) {
                 case 'caption':
                     this.captionTemplate = item.template;
-                    break;
+                break;
 
                 case 'header':
                     this.headerTemplate = item.template;
-                    break;
+                break;
 
                 case 'headergrouped':
                     this.headerGroupedTemplate = item.template;
-                    break;
+                break;
 
                 case 'body':
                     this.bodyTemplate = item.template;
-                    break;
+                break;
 
                 case 'loadingbody':
                     this.loadingBodyTemplate = item.template;
-                    break;
+                break;
 
                 case 'footer':
                     this.footerTemplate = item.template;
-                    break;
+                break;
 
                 case 'footergrouped':
                     this.footerGroupedTemplate = item.template;
-                    break;
+                break;
 
                 case 'summary':
                     this.summaryTemplate = item.template;
-                    break;
+                break;
 
                 case 'colgroup':
                     this.colGroupTemplate = item.template;
-                    break;
+                break;
 
                 case 'rowexpansion':
                     this.expandedRowTemplate = item.template;
-                    break;
+                break;
 
                 case 'groupheader':
                     this.groupHeaderTemplate = item.template;
-                    break;
+                break;
 
                 case 'rowspan':
                     this.rowspanTemplate = item.template;
-                    break;
+                break;
 
                 case 'groupfooter':
                     this.groupFooterTemplate = item.template;
-                    break;
+                break;
 
                 case 'frozenrows':
                     this.frozenRowsTemplate = item.template;
-                    break;
+                break;
 
                 case 'frozenheader':
                     this.frozenHeaderTemplate = item.template;
-                    break;
+                break;
 
                 case 'frozenbody':
                     this.frozenBodyTemplate = item.template;
-                    break;
+                break;
 
                 case 'frozenfooter':
                     this.frozenFooterTemplate = item.template;
-                    break;
+                break;
 
                 case 'frozencolgroup':
                     this.frozenColGroupTemplate = item.template;
-                    break;
+                break;
 
                 case 'frozenrowexpansion':
                     this.frozenExpandedRowTemplate = item.template;
-                    break;
+                break;
 
                 case 'emptymessage':
                     this.emptyMessageTemplate = item.template;
-                    break;
+                break;
 
                 case 'paginatorleft':
                     this.paginatorLeftTemplate = item.template;
-                    break;
+                break;
 
                 case 'paginatorright':
                     this.paginatorRightTemplate = item.template;
-                    break;
+                break;
 
                 case 'paginatordropdownitem':
                     this.paginatorDropdownItemTemplate = item.template;
-                    break;
+                break;
             }
         });
     }
@@ -634,9 +633,9 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
 
         if (this.scrollable && this.virtualScroll) {
             this.virtualScrollSubscription =  this.virtualScrollBody.renderedRangeStream.subscribe(range => {
-                        let top = range.start * this.virtualRowHeight * -1;
-                        this.tableHeaderViewChild.nativeElement.style.top = top + 'px';
-                    });
+                let top = range.start * this.virtualRowHeight * -1;
+                this.tableHeaderViewChild.nativeElement.style.top = top + 'px';
+            });
         }
     }
 
@@ -1528,7 +1527,7 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
                     this.totalRecords = this.value ? this.value.length : 0;
                 }
             }
-             else {
+            else {
                 let globalFilterFieldsArray;
                 if (this.filters['global']) {
                     if (!this.columns && !this.globalFilterFields)
@@ -1815,7 +1814,7 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
         if (this.virtualScrollBody) {
             this.virtualScrollBody.scrollTo(options);
         }
-        else  if (this.wrapperViewChild?.nativeElement) {
+        else  if (this.wrapperViewChild && this.wrapperViewChild.nativeElement) {
             if (this.wrapperViewChild.nativeElement.scrollTo) {
                 this.wrapperViewChild.nativeElement.scrollTo(options);
             }
@@ -2348,25 +2347,19 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
             if (ObjectUtils.isNotEmpty(widths)) {
                 this.createStyleElement();
 
-            if (this.scrollable && widths && widths.length > 0) {
-                    let innerHTML = '';
-                    widths.forEach((width,index) => {
-                        innerHTML += `
-                            #${this.id}-table > .p-datatable-thead > tr > th:nth-child(${index+1}) {
-                                flex: 0 0 ${width}px;
-                            }
+                let innerHTML = '';
+                widths.forEach((width,index) => {
+                    let style = this.scrollable ? `flex: 1 1 ${width}px !important` : `width: ${width}px !important`;
 
-                            #${this.id}-table > .p-datatable-tbody > tr > td:nth-child(${index+1}) {
-                                flex: 0 0 ${width}px;
-                            }
-                        `
+                    innerHTML += `
+                        #${this.id} .p-datatable-thead > tr > th:nth-child(${index + 1}),
+                        #${this.id} .p-datatable-thead > tr > td:nth-child(${index + 1}),
+                        #${this.id} .p-datatable-tbody > tr > td:nth-child(${index + 1}),
+                        #${this.id} .p-datatable-tfoot > tr > td:nth-child(${index + 1}) {
+                            ${style}
+                        }
+                    `;
                     });
-                this.styleElement.innerHTML = innerHTML;
-            }
-            else {
-                DomHandler.find(this.tableViewChild.nativeElement, '.p-datatable-thead > tr > th').forEach((header, index) => {
-                    header.style.width = widths[index] + 'px';
-                });
 
                 this.styleElement.innerHTML = innerHTML;
             }
@@ -4081,7 +4074,7 @@ export class TableHeaderCheckbox  {
     updateCheckedState() {
         this.cd.markForCheck();
 
-        if (this.dt._selectAll !== null) {
+       if (this.dt._selectAll !== null) {
             return this.dt._selectAll;
         }
         else {
@@ -4503,15 +4496,15 @@ export class ColumnFilter implements AfterContentInit {
 
                 case 'filter':
                     this.filterTemplate = item.template;
-                    break;
+                break;
 
                 case 'footer':
                     this.footerTemplate = item.template;
-                    break;
+                break;
 
                 default:
                     this.filterTemplate = item.template;
-                    break;
+                break;
             }
         });
     }
@@ -4548,7 +4541,7 @@ export class ColumnFilter implements AfterContentInit {
                 }
 
                 event.preventDefault();
-                break;
+            break;
 
             case 'ArrowUp':
                 var prevItem = this.findPrevItem(item);
@@ -4559,7 +4552,7 @@ export class ColumnFilter implements AfterContentInit {
                 }
 
                 event.preventDefault();
-                break;
+            break;
         }
     }
 
@@ -4602,7 +4595,7 @@ export class ColumnFilter implements AfterContentInit {
             case 'Escape':
             case 'Tab':
                 this.overlayVisible = false;
-                break;
+            break;
 
             case 'ArrowDown':
                 if (this.overlayVisible) {
@@ -4616,7 +4609,7 @@ export class ColumnFilter implements AfterContentInit {
                     this.overlayVisible = true;
                     event.preventDefault();
                 }
-                break;
+            break;
         }
     }
 
