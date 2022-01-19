@@ -1958,21 +1958,21 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
 
     onColumnResizeEnd() {
         let delta = this.resizeHelperViewChild.nativeElement.offsetLeft - this.lastResizerHelperX;
-        let columnWidth = this.resizeColumnElement.offsetWidth;
+        let columnWidth = DomHandler.getOuterWidth(this.resizeColumnElement);
         let newColumnWidth = columnWidth + delta;
         let minWidth = this.resizeColumnElement.style.minWidth||15;
 
         if (newColumnWidth >= minWidth) {
             if (this.columnResizeMode === 'fit') {
                 let nextColumn = this.resizeColumnElement.nextElementSibling;
-                let nextColumnWidth = nextColumn.offsetWidth - delta;
+                let nextColumnWidth = DomHandler.getOuterWidth(nextColumn) - delta;
 
                 if (newColumnWidth > 15 && nextColumnWidth > 15) {
                     this.resizeTableCells(newColumnWidth, nextColumnWidth);
                 }
             }
             else if (this.columnResizeMode === 'expand') {
-                let tableWidth = this.tableViewChild.nativeElement.offsetWidth + delta;
+                let tableWidth = DomHandler.getOuterWidth(this.tableViewChild.nativeElement) + delta;
                 this.tableViewChild.nativeElement.style.width = tableWidth + 'px';
                 this.tableViewChild.nativeElement.style.minWidth = tableWidth + 'px';
 
@@ -2037,14 +2037,14 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
                 let dropIndex = DomHandler.indexWithinGroup(dropHeader, 'preorderablecolumn');
                 let targetLeft = dropHeaderOffset.left - containerOffset.left;
                 let targetTop = containerOffset.top - dropHeaderOffset.top;
-                let columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
+                let columnCenter = dropHeaderOffset.left + DomHandler.getOuterWidth(dropHeader) / 2;
 
                 this.reorderIndicatorUpViewChild.nativeElement.style.top = dropHeaderOffset.top - containerOffset.top - (this.reorderIconHeight - 1) + 'px';
                 this.reorderIndicatorDownViewChild.nativeElement.style.top = dropHeaderOffset.top - containerOffset.top + dropHeader.offsetHeight + 'px';
 
                 if (event.pageX > columnCenter) {
-                    this.reorderIndicatorUpViewChild.nativeElement.style.left = (targetLeft + dropHeader.offsetWidth - Math.ceil(this.reorderIconWidth / 2)) + 'px';
-                    this.reorderIndicatorDownViewChild.nativeElement.style.left = (targetLeft + dropHeader.offsetWidth - Math.ceil(this.reorderIconWidth / 2)) + 'px';
+                    this.reorderIndicatorUpViewChild.nativeElement.style.left = (targetLeft + DomHandler.getOuterWidth(dropHeader) - Math.ceil(this.reorderIconWidth / 2)) + 'px';
+                    this.reorderIndicatorDownViewChild.nativeElement.style.left = (targetLeft + DomHandler.getOuterWidth(dropHeader) - Math.ceil(this.reorderIconWidth / 2)) + 'px';
                     this.dropPosition = 1;
                 }
                 else {
@@ -2330,7 +2330,7 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
         state.columnWidths = widths.join(',');
 
         if (this.columnResizeMode === 'expand') {
-            state.tableWidth =  DomHandler.getOuterWidth(this.tableViewChild.nativeElement) + 'px';
+            state.tableWidth = widths.map((x) => Number(x)).reduce((a, b) => a + b, 0).toString() + 'px';;
         }
     }
 
@@ -2338,8 +2338,8 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
         if (this.columnWidthsState) {
             let widths = this.columnWidthsState.split(',');
 
+            this.tableWidthState = widths.map((x) => Number(x)).reduce((a, b) => a + b, 0).toString() + 'px';
             if (this.columnResizeMode === 'expand' && this.tableWidthState) {
-                this.tableWidthState = widths.map((x) => Number(x)).reduce((a, b) => a + b, 0).toString();
                 this.tableViewChild.nativeElement.style.width = this.tableWidthState;
                 this.tableViewChild.nativeElement.style.minWidth = this.tableWidthState;
             }
