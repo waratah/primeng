@@ -335,7 +335,7 @@ export class ContextMenu implements AfterViewInit, OnDestroy {
 
         sublist.style.zIndex = ++DomHandler.zindex;
 
-        if ((parseInt(containerOffset.top) + itemOuterHeight + sublistHeight) > (viewport.height - DomHandler.calculateScrollbarHeight())) {
+        if ((containerOffset.top + itemOuterHeight + sublistHeight) > (viewport.height - DomHandler.calculateScrollbarHeight())) {
             sublist.style.removeProperty('top');
             sublist.style.bottom = '0px';
         }
@@ -344,7 +344,7 @@ export class ContextMenu implements AfterViewInit, OnDestroy {
             sublist.style.top = '0px';
         }
 
-        if ((parseInt(containerOffset.left) + itemOuterWidth + sublistWidth) > (viewport.width - DomHandler.calculateScrollbarWidth())) {
+        if ((containerOffset.left + itemOuterWidth + sublistWidth) > (viewport.width - DomHandler.calculateScrollbarWidth())) {
             sublist.style.left = -sublistWidth + 'px';
         }
         else {

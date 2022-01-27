@@ -153,7 +153,7 @@ export class ConfirmPopup implements OnDestroy {
         DomHandler.absolutePosition(this.container, this.confirmation.target);
 
         const containerOffset = DomHandler.getOffset(this.container);
-        const targetOffset = DomHandler.getOffset(this.confirmation.target);
+        const targetOffset = DomHandler.getOffset(this.confirmation.target );
         let arrowLeft = 0;
 
         if (containerOffset.left < targetOffset.left) {

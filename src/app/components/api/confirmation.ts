@@ -19,7 +19,7 @@ export interface Confirmation {
     defaultFocus?: string;
     acceptButtonStyleClass?: string;
     rejectButtonStyleClass?: string;
-    target?: EventTarget;
+    target?: HTMLElement;
     acceptEvent?: EventEmitter<any>;
     rejectEvent?: EventEmitter<any>;
 }

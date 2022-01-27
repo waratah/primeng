@@ -131,9 +131,9 @@ export class DomHandler {
         let elementDimensions = element.offsetParent ? { width: element.offsetWidth, height: element.offsetHeight } : this.getHiddenElementDimensions(element);
         let elementOuterHeight = elementDimensions.height;
         let elementOuterWidth = elementDimensions.width;
-        let targetOuterHeight = target.offsetHeight;
-        let targetOuterWidth = target.offsetWidth;
-        let targetOffset = target.getBoundingClientRect();
+        let targetOuterHeight = target?.offsetHeight;
+        let targetOuterWidth = target?.offsetWidth;
+        let targetOffset = target?.getBoundingClientRect();
         let windowScrollTop = this.getWindowScrollTop();
         let windowScrollLeft = this.getWindowScrollLeft();
         let viewport = this.getViewport();
@@ -295,7 +295,7 @@ export class DomHandler {
         return (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
     }
 
-    public static matches(element, selector: string): boolean {
+    public static matches(element: HTMLElement, selector: string): boolean {
         var p = Element.prototype;
         var f = p['matches'] || p.webkitMatchesSelector || p['mozMatchesSelector'] || p['msMatchesSelector'] || function (s) {
             return [].indexOf.call(document.querySelectorAll(s), this) !== -1;
@@ -303,7 +303,11 @@ export class DomHandler {
         return f.call(element, selector);
     }
 
-    public static getOuterWidth(el, margin?) {
+    public static getOuterWidth(el: HTMLElement, margin?) {
+        if( ! el ) {
+            return 0;
+        }
+
         let width = el.offsetWidth;
 
         if (margin) {
@@ -314,17 +318,17 @@ export class DomHandler {
         return width;
     }
 
-    public static getHorizontalPadding(el) {
+    public static getHorizontalPadding(el: HTMLElement) {
         let style = getComputedStyle(el);
         return parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
     }
 
-    public static getHorizontalMargin(el) {
+    public static getHorizontalMargin(el: HTMLElement) {
         let style = getComputedStyle(el);
         return parseFloat(style.marginLeft) + parseFloat(style.marginRight);
     }
 
-    public static innerWidth(el) {
+    public static innerWidth(el: HTMLElement) {
         let width = el.offsetWidth;
         let style = getComputedStyle(el);
 
@@ -332,7 +336,7 @@ export class DomHandler {
         return width;
     }
 
-    public static width(el) {
+    public static width(el: HTMLElement) {
         let width = el.offsetWidth;
         let style = getComputedStyle(el);
 
@@ -340,7 +344,7 @@ export class DomHandler {
         return width;
     }
 
-    public static getInnerHeight(el) {
+    public static getInnerHeight(el: HTMLElement) {
         let height = el.offsetHeight;
         let style = getComputedStyle(el);
 
@@ -348,7 +352,7 @@ export class DomHandler {
         return height;
     }
 
-    public static getOuterHeight(el, margin?) {
+    public static getOuterHeight(el: HTMLElement, margin?) {
         let height = el.offsetHeight;
 
         if (margin) {
@@ -359,7 +363,7 @@ export class DomHandler {
         return height;
     }
 
-    public static getHeight(el): number {
+    public static getHeight(el: HTMLElement): number {
         let height = el.offsetHeight;
         let style = getComputedStyle(el);
 
@@ -368,7 +372,7 @@ export class DomHandler {
         return height;
     }
 
-    public static getWidth(el): number {
+    public static getWidth(el: HTMLElement): number {
         if(!el) {
             return 0;
         }
@@ -391,7 +395,7 @@ export class DomHandler {
         return { width: w, height: h };
     }
 
-    public static getOffset(el) {
+    public static getOffset(el: HTMLElement) {
         var rect = el.getBoundingClientRect();
 
         return {

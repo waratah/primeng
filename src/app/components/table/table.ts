@@ -2218,8 +2218,8 @@ export class Table implements OnInit, OnDestroy, AfterViewInit, AfterContentInit
         }
     }
 
-    isStateful() {
-        return this.stateKey != null;
+    private isStateful() {
+        return this.stateKey;
     }
 
     saveState() {
