@@ -1,5 +1,6 @@
 .p-multiselect {
-    display: inline-flex;
+    display: flex;
+    text-overflow: ellipsis;
     cursor: pointer;
     position: relative;
     user-select: none;
