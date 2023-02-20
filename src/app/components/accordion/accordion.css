@@ -14,3 +14,20 @@
 .p-accordion-header-text {
     line-height: 1;
 }
+
+.p-accordion .p-toggleable-content{
+    overflow: hidden;
+}
+
+.p-accordion .p-accordion-tab-active > .p-toggleable-content:not(.ng-animating) {
+    overflow: inherit;
+}
+
+.p-accordion-toggle-icon-end {
+    order: 1;
+    margin-left: auto;
+}
+
+.p-accordion-toggle-icon{
+    order: 0;
+}

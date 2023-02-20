@@ -7,11 +7,11 @@
         "root": "src",
         "projectType": "library",
         "architect": {
-            "build": {
+          "build": {
             "builder": "@angular-devkit/build-angular:ng-packagr",
             "options": {
-                "project": "src/app/components/ng-package.json",
-                "tsConfig": "src/app/components/tsconfig.lib.prod.json"
+              "project": "src/app/components/ng-package.json",
+              "tsConfig": "src/app/components/tsconfig.lib.prod.json"
             }
           }
         }
@@ -39,9 +39,13 @@
               "assets": [
                 "src/favicon.png",
                 "src/assets",
-                "src/upload.php"
+                "src/showcase",
+                "src/upload.php",
+                "src/versions.json",
+                "src/.htaccess"
               ],
               "styles": [
+                "src/assets/showcase/styles/app/app.scss",
                 "src/styles.scss"
               ],
               "scripts": [
@@ -54,8 +58,11 @@
                 "@fullcalendar/daygrid",
                 "chart.js",
                 "xlsx",
-                "jspdf-autotable"
-             ]
+                "jspdf-autotable",
+                "file-saver",
+                "jspdf",
+                "quill"
+              ]
             },
             "configurations": {
               "production": {
@@ -65,7 +72,14 @@
                     "with": "src/environments/environment.prod.ts"
                   }
                 ],
-                "optimization": true,
+                "optimization": {
+                  "scripts": true,
+                  "styles": {
+                    "minify": true,
+                    "inlineCritical": false
+                  },
+                  "fonts": true
+                },
                 "outputHashing": "all",
                 "sourceMap": false,
                 "namedChunks": false,
@@ -123,25 +137,28 @@
               ],
               "styles": [
                 "src/styles.scss",
-                "src/assets/components/themes/lara-light-indigo/theme.css"
+                "src/assets/components/themes/lara-light-blue/theme.css"
               ],
               "scripts": []
             }
           },
           "lint": {
-            "builder": "@angular-devkit/build-angular:tslint",
+            "builder": "@angular-eslint/builder:lint",
             "options": {
-              "tsConfig": [
-                "tsconfig.app.json",
-                "tsconfig.spec.json"
-              ],
-              "exclude": [
-                "**/node_modules/**"
+              "lintFilePatterns": [
+                "src/**/*.ts",
+                "src/**/*.html"
               ]
             }
           }
         }
       }
     },
-    "defaultProject": "primeng"
+    "defaultProject": "primeng",
+    "cli": {
+      "analytics": false,
+      "schematicCollections": [
+        "@angular-eslint/schematics"
+      ]
+    }
   }

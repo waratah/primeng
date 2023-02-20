@@ -14,7 +14,7 @@
             <ng-template let-product pTemplate="item">
                 <div class="product-item">
                     <div class="image-container">
-                            <img src="assets/showcase/images/demo/product/{{product.image}}" [alt]="product.name" class="product-image" />
+                            <img src="https://primefaces.org/cdn/primeng/images/demo/product/{{product.image}}" [alt]="product.name" class="product-image" />
                     </div>
                     <div class="product-list-detail">
                         <h5 class="mb-2">{{product.name}}</h5>
@@ -52,7 +52,7 @@ import &#123;PickListModule&#125; from 'primeng/picklist';
 &lt;p-pickList [source]="list1" [target]="list2"&gt;
     &lt;ng-template let-car pTemplate="item"&gt;
         &lt;div&gt;
-            &lt;img src="assets/showcase/images/demo/car/{{car.brand}}.png" style="display:inline-block;margin:2px 0 2px 2px" width="48"&gt;
+            &lt;img src="https://primefaces.org/cdn/primeng/images/demo/car/{{car.brand}}.png" style="display:inline-block;margin:2px 0 2px 2px" width="48"&gt;
             &lt;div style="font-size:14px;float:right;margin:15px 5px 0 0"&gt;{{car.brand}} - {{car.year}} - {{car.color}}&lt;/div&gt;
         &lt;/div&gt;
     &lt;/ng-template&gt;
@@ -93,6 +93,42 @@ export class MyComponent &#123;
                 This <i>filterBy</i> property decides which field to search(Accepts multiple fields with a comma).</p>
 <app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
 &lt;p-pickList [source]="sourceCars" [target]="targetCars" filterBy="brand"&gt;&lt;/p-pickList&gt;
+</app-code>
+
+            <h6>Templating</h6>
+            <p><i>sourceFilter</i> and <i>targetFilter</i> can easily be customized with the filter content instead of using the built-in modes.</p>
+<app-code lang="markup" ngNonBindable ngPreserveWhitespaces>
+&lt;p-pickList [source]="sourceCars" [target]="targetCars" filterBy="brand"&gt;
+    &lt;ng-template pTemplate="sourceFilter" let-options="options"&gt;
+        &lt;div class="p-picklist-filter"&gt;
+            &lt;input [(ngModel)]="sourceFilterValue" type="text" (keyup)="options.filter($event.target.value)" role="textbox" class="p-picklist-filter-input p-inputtext p-component"&gt;
+            &lt;span *ngIf="sourceFilterValue" class="p-picklist-filter-icon pi pi-times" (click)="options.reset(); sourceFilterValue = ''"&gt;&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/ng-template&gt;
+    &lt;ng-template pTemplate="targetFilter" let-options="options"&gt;
+        &lt;div class="p-picklist-filter"&gt;
+            &lt;input [(ngModel)]="targetFilterValue" type="text" (keyup)="options.filter($event.target.value)" role="textbox" class="p-picklist-filter-input p-inputtext p-component"&gt;
+            &lt;span *ngIf="targetFilterValue" class="p-picklist-filter-icon pi pi-times" (click)="myResetFunction(options)"&gt;&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/ng-template&gt;
+&lt;/p-pickList&gt;
+</app-code>
+
+<app-code lang="typescript" ngNonBindable ngPreserveWhitespaces>
+import &#123; PickListFilterOptions &#125; from 'primeng/picklist';
+...
+export class MyComponent &#123;
+    ...
+
+    sourceFilterValue: string = '';
+    
+    targetFilterValue: string = '';
+
+    myResetFunction(options: PickListFilterOptions) &#123;
+        options.reset();
+        this.targetFilterValue = '';
+    &#125;
+&#125;
 </app-code>
 
 <h5>DragDrop</h5>
@@ -160,7 +196,7 @@ This dragdrop property also supports cross list actions.</p>
                             <td>trackBy</td>
                             <td>Function</td>
                             <td>null</td>
-                            <td>Function to optimize the dom operations by delegating to ngForTrackBy, default algoritm checks for object identity. Use sourceTrackBy or targetTrackBy in
+                            <td>Function to optimize the dom operations by delegating to ngForTrackBy, default algorithm checks for object identity. Use sourceTrackBy or targetTrackBy in
                                 case different algorithms are needed per list.
                             </td>
                         </tr>
@@ -168,13 +204,13 @@ This dragdrop property also supports cross list actions.</p>
                             <td>sourceTrackBy</td>
                             <td>Function</td>
                             <td>null</td>
-                            <td>Function to optimize the dom operations by delegating to ngForTrackBy in source list, default algoritm checks for object identity.</td>
+                            <td>Function to optimize the dom operations by delegating to ngForTrackBy in source list, default algorithm checks for object identity.</td>
                         </tr>
                         <tr>
                             <td>targetTrackBy</td>
                             <td>Function</td>
                             <td>null</td>
-                            <td>Function to optimize the dom operations by delegating to ngForTrackBy in target list, default algoritm checks for object identity.</td>
+                            <td>Function to optimize the dom operations by delegating to ngForTrackBy in target list, default algorithm checks for object identity.</td>
                         </tr>
                         <tr>
                             <td>showSourceFilter</td>
@@ -260,6 +296,12 @@ This dragdrop property also supports cross list actions.</p>
                             <td>boolean</td>
                             <td>false</td>
                             <td>When present, it specifies that the component should be disabled.</td>
+                        </tr>
+                        <tr>
+                            <td>keepSelection</td>
+                            <td>boolean</td>
+                            <td>false</td>
+                            <td>Keeps selection on the transfer list.</td>
                         </tr>
                         <tr>
                             <td>ariaSourceFilterLabel</td>
@@ -412,6 +454,16 @@ This dragdrop property also supports cross list actions.</p>
                     </thead>
                     <tbody>
                         <tr>
+                            <td>resetSourceFilter</td>
+                            <td>-</td>
+                            <td>Resets the filters of the source list.</td>
+                        </tr>
+                        <tr>
+                            <td>resetTargetFilter</td>
+                            <td>-</td>
+                            <td>Resets the filters of the target list.</td>
+                        </tr>
+                        <tr>
                             <td>resetFilter</td>
                             <td>-</td>
                             <td>Resets the filters.</td>
@@ -448,6 +500,18 @@ This dragdrop property also supports cross list actions.</p>
                         <tr>
                             <td>targetHeader</td>
                             <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>sourceFilter</td>
+                            <td>options.filter: Callback to filter data by the value param<br />
+                                options.reset: Resets the filters.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>targetFilter</td>
+                            <td>options.filter: Callback to filter data by the value param<br />
+                                options.reset: Resets the filters
+                            </td>
                         </tr>
                         <tr>
                             <td>emptymessagesource</td>
@@ -526,7 +590,7 @@ This dragdrop property also supports cross list actions.</p>
     &lt;ng-template let-product pTemplate="item"&gt;
         &lt;div class="product-item"&gt;
             &lt;div class="image-container"&gt;
-                    &lt;img src="assets/showcase/images/demo/product/&#123;&#123;product.image&#125;&#125;" [alt]="product.name" class="product-image" /&gt;
+                    &lt;img src="https://primefaces.org/cdn/primeng/images/demo/product/&#123;&#123;product.image&#125;&#125;" [alt]="product.name" class="product-image" /&gt;
             &lt;/div&gt;
             &lt;div class="product-list-detail"&gt;
                 &lt;h5 class="mb-2"&gt;&#123;&#123;product.name&#125;&#125;&lt;/h5&gt;
